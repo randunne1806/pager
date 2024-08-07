@@ -1,0 +1,15 @@
+pagertec
+
+# databases
+*data
+
+# drawio
+*.bkp
+*.dtmp
+
+# node.js
+node_modules
+
+# vscode
+.vscode
+*.code-workspace

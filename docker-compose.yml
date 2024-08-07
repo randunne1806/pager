@@ -1,0 +1,54 @@
+version: '3.1'
+services:
+  pager-log-db:
+    image: postgres:alpine
+    networks:
+      pager-bridge:
+        ipv4_address: 10.0.0.2
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: amitron-labs
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+      - ./create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql
+  pager-log:
+    depends_on:
+      - pager-log-db
+    build: pager-log
+    environment:
+      - PAGER_LOG_DB_HOST=${PAGER_LOG_DB_HOST}
+      - PAGER_LOG_DB_PORT=${PAGER_LOG_DB_PORT}
+    networks:
+      pager-bridge:
+        ipv4_address: 10.0.0.3
+    ports:
+      - 8080:8080
+  pager-relay:
+    build: pager-relay
+    environment:
+      - TRANSMITTER_IPV4=${TRANSMITTER_IPV4}
+    networks:
+      pager-bridge:
+        ipv4_address: 10.0.0.4
+    ports:
+      - 5000:5000
+      - 8899:8899
+  pager-view:
+    build: pager-view
+    environment:
+      - REACT_APP_PAGER_LOG_BASE=${REACT_APP_PAGER_LOG_BASE}
+      - REACT_APP_PAGER_RELAY_BASE=${REACT_APP_PAGER_RELAY_BASE}
+    networks:
+      pager-bridge:
+        ipv4_address: 10.0.0.5
+    ports:
+      - 80:3000
+networks:
+  pager-bridge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/16

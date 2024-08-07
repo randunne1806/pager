@@ -1,0 +1,9 @@
+[submodule "pager-relay"]
+	path = pager-relay
+	url = git@github.com:Amitron-Labs/pager-relay.git
+[submodule "pager-view"]
+	path = pager-view
+	url = git@github.com:Amitron-Labs/pager-view.git
+[submodule "pager-log"]
+	path = pager-log
+	url = git@github.com:Amitron-Labs/pager-log.git
